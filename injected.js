@@ -18,6 +18,17 @@ window.XMLHttpRequest = function (){
 		})[0].loadedRes;
 	}
 
+	function isCached(data){
+		console.log("checking if cached");
+		var cached = storage.filter(function(current, index, arr){
+			return current.url === data.url;
+		});
+		console.log(cached);
+		console.log(cached.lenght > 0);
+		console.log(cached.lenght);
+		return cached.length > 0;
+	}
+
 	function toBeCopied(attr){
 		var toBeReplaced = ['open', 'send', 'readyState'];
 		return !toBeReplaced.includes(attr);
@@ -47,7 +58,7 @@ window.XMLHttpRequest = function (){
 				return;
 			}
 		});
-		if (!cached(reqData)){
+		if (!isCached(reqData)){
 			console.log('req sent');
 			myXHR.send(post_data);
 		}else{
