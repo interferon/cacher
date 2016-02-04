@@ -32,7 +32,7 @@ window.XMLHttpRequest = function (){
 	this.open = function(method, url, async, user, pass){
 		console.log('opened');
 		this.__url = url;
-		myXHR.open.call(this, method, url, async, user, pass);
+		myXHR.open(method, url, async, user, pass);
 	};
 	this.send = function(post_data){
 		var reqData = {url : this.__url,post : post_data};
