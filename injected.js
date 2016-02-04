@@ -21,10 +21,11 @@ function isCached(data){
 	return cached.length > 0;
 }
 
-function checkCache(data, abortReq, assignCached){
+function checkCache(data, abortReq, assignCached, callOriginalSend){
 	console.log(isCached(data));
 	if (!isCached(data)){
 		saveCache(data);
+		callOriginalSend();
 	}
 	else{
 		console.log("req abort");
@@ -45,6 +46,10 @@ XMLHttpRequest.prototype.send = function(post_data){
 	function abortReq(){
 		that.abort();
 	}
+	function callOriginalSend(){
+		console.log("called");
+		orig_send.call(that, post_data);
+	}
 	this.addEventListener('loadend', function(){
 		console.log('loaded');
 		checkCache({
@@ -55,11 +60,9 @@ XMLHttpRequest.prototype.send = function(post_data){
 		abortReq,
 		function(cached){
 			that = cached;
-		});
+		},
+		callOriginalSend
+		);
 	});
-	
-	function callOriginalSend(){
-		orig_send.call(that, post_data);
-	}
 	
 };
