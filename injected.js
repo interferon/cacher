@@ -14,7 +14,7 @@ window.XMLHttpRequest = function (){
 	function getCached(data){
 		console.log("cache extracted");
 		return storage.filter(function(current, index, arr){
-			return JSON.stringify(current.url) === JSON.stringify(data.url) && JSON.stringify(current.post) === JSON.stringify(data.post); 
+			return current.url === data.url;
 		})[0].loadedRes;
 	}
 
@@ -29,16 +29,16 @@ window.XMLHttpRequest = function (){
 		}
 	}
 
-	this.prototype.open = function(method, url, async, user, pass){
+	this.open = function(method, url, async, user, pass){
 		console.log('opened');
 		this.__url = url;
 		myXHR.open.call(this, method, url, async, user, pass);
 	};
-	this.prototype.send = function(post_data){
+	this.send = function(post_data){
 		var reqData = {url : this.__url,post : post_data};
-		this.addEventListener('readystatechange', function(){
-			if (this.readyState == 4) {
-				if(this.status == 200) {
+		myXHR.addEventListener('readystatechange', function(){
+			if (myXHR.readyState == 4) {
+				if(myXHR.status == 200) {
 					reqData.loadedRes = this.responseText;
 					saveCache(reqData);
 				}
@@ -49,7 +49,7 @@ window.XMLHttpRequest = function (){
 		});
 		if (!cached(reqData)){
 			console.log('req sent');
-			myXHR.send.call(this, post_data);
+			myXHR.send(post_data);
 		}else{
 			this.responseText = getCached(reqData);
 			this.readyState = 4;
@@ -59,8 +59,6 @@ window.XMLHttpRequest = function (){
 
 	}
 	
-	this.prototype.readyState = 0;
-	
+	this.readyState = 0;
 	return this;
-
 };
