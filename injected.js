@@ -3,7 +3,7 @@ var xhr = window.XMLHttpRequest;
 var storage = [];
 
 window.XMLHttpRequest = function (){
-	
+
 	var myXHR = new xhr();
 
 	function saveCache(data){
@@ -23,18 +23,18 @@ window.XMLHttpRequest = function (){
 		return !toBeReplaced.includes(attr);
 	}
 
-	for (attr in xhr){
+	for (var attr in xhr){
 		if (toBeCopied(attr)){
-			myXHR.attr = xhr[attr]; 
+			this.attr = xhr[attr]; 
 		}
 	}
 
-	myXHR.open = function(method, url, async, user, pass){
+	this.prototype.open = function(method, url, async, user, pass){
 		console.log('opened');
 		this.__url = url;
-		orig_open.call(this, method, url, async, user, pass);
+		myXHR.open.call(this, method, url, async, user, pass);
 	};
-	myXHR.send = function(post_data){
+	this.prototype.send = function(post_data){
 		var reqData = {url : this.__url,post : post_data};
 		this.addEventListener('readystatechange', function(){
 			if (this.readyState == 4) {
@@ -49,7 +49,7 @@ window.XMLHttpRequest = function (){
 		});
 		if (!cached(reqData)){
 			console.log('req sent');
-			orig_send.call(this, post_data);
+			myXHR.send.call(this, post_data);
 		}else{
 			this.responseText = getCached(reqData);
 			this.readyState = 4;
@@ -59,8 +59,8 @@ window.XMLHttpRequest = function (){
 
 	}
 	
-	myXHR.readyState = 0;
+	this.prototype.readyState = 0;
 	
-	return myXHR;
+	return this;
 
 };
