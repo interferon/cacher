@@ -1,6 +1,6 @@
 module.exports.helperFuncs = {	
-	saveToStorage : function (key,  data) {
-		localStorage.setItem(key, JSON.stringify(data));
+	saveToStorage : function (data) {
+		localStorage.setItem(data.url, JSON.stringify(data));
 	},
 	getFromStorage : function (key) {
 		var stored = localStorage.getItem(key);

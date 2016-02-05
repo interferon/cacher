@@ -71,7 +71,7 @@
 				if (myXHR.readyState == 4) {
 					if(myXHR.status == 200) {
 						reqData.loadedRes = this.responseText;
-						hp.saveToStorage(reqData.url, reqData);
+						hp.saveToStorage(reqData);
 					}
 				}
 				else{
@@ -97,8 +97,8 @@
 /***/ function(module, exports) {
 
 	module.exports.helperFuncs = {	
-		saveToStorage : function (key,  data) {
-			localStorage.setItem(key, JSON.stringify(data));
+		saveToStorage : function (data) {
+			localStorage.setItem(data.url, JSON.stringify(data));
 		},
 		getFromStorage : function (key) {
 			var stored = localStorage.getItem(key);

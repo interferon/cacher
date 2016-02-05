@@ -25,7 +25,7 @@ window.XMLHttpRequest = function (){
 			if (myXHR.readyState == 4) {
 				if(myXHR.status == 200) {
 					reqData.loadedRes = this.responseText;
-					hp.saveToStorage(reqData.url, reqData);
+					hp.saveToStorage(reqData);
 				}
 			}
 			else{
