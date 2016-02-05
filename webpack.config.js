@@ -2,10 +2,10 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    entry: './main.js',
+    entry: './src/injected_working.js',
     output: {
         path: __dirname,
-        filename: 'bundle.js'
+        filename: './dist/injected.js'
     },
     module: {
         loaders: [
