@@ -23,9 +23,6 @@ window.XMLHttpRequest = function (){
 		var cached = storage.filter(function(current, index, arr){
 			return current.url === data.url;
 		});
-		console.log(cached);
-		console.log(cached.lenght > 0);
-		console.log(cached.lenght);
 		return cached.length > 0;
 	}
 
@@ -46,7 +43,10 @@ window.XMLHttpRequest = function (){
 		myXHR.open(method, url, async, user, pass);
 	};
 	this.send = function(post_data){
-		var reqData = {url : this.__url,post : post_data};
+		var reqData = {
+			url : this.__url,
+			post : post_data
+		};
 		myXHR.addEventListener('readystatechange', function(){
 			if (myXHR.readyState == 4) {
 				if(myXHR.status == 200) {
@@ -67,9 +67,7 @@ window.XMLHttpRequest = function (){
 			this.status = 200;
 			this.onreadystatechange();
 		}
-
-	}
-	
+	}	
 	this.readyState = 0;
 	return this;
 };

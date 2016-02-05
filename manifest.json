@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Cacher",
-  "description": "this ext chaches xmlhttprequests",
+  "description": "this ext caches xmlhttprequests",
   "version": "1.0",
 
   "browser_action": {
@@ -17,8 +17,9 @@
     {
       "matches": ["http://*/*"],
       "css": ["mystyles.css"],
-      "js": ["bundle.js"]
+      "js": ["/bundle.js"],
+      "run_at": "document_start"
     }
   ],
-   "web_accessible_resources": ["injected.js"]
+   "web_accessible_resources": ["/injected.js"]
 }
