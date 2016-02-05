@@ -1,29 +1,39 @@
-var xhr = window.XMLHttpRequest;
 
-var storage = [];
+
+var xhr = window.XMLHttpRequest;
 
 window.XMLHttpRequest = function (){
 
 	var myXHR = new xhr();
 
-	function saveCache(data){
-		console.log('stored');
-		storage.push(data);
+	function saveToStorage (key,  data) {
+		localStorage.setItem(key, JSON.stringify(data));
+	}
+
+	function getFromStorage (key) {
+		var stored = localStorage.getItem(key);
+		return JSON.parse(stored);
+	}
+
+	function entriesAreEqual(entry1, entry2){
+		var result = false;
+		if (entry1.url === entry2.url){
+			if (entry1.post === entry2.post){
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	function getCached(data){
 		console.log("cache extracted");
-		return storage.filter(function(current, index, arr){
-			return current.url === data.url;
-		})[0].loadedRes;
+		return getFromStorage(data.url).loadedRes;
 	}
 
 	function isCached(data){
 		console.log("checking if cached");
-		var cached = storage.filter(function(current, index, arr){
-			return current.url === data.url;
-		});
-		return cached.length > 0;
+		var cached = getFromStorage(data.url);
+		return cached !== null;
 	}
 
 	function toBeCopied(attr){
@@ -51,7 +61,7 @@ window.XMLHttpRequest = function (){
 			if (myXHR.readyState == 4) {
 				if(myXHR.status == 200) {
 					reqData.loadedRes = this.responseText;
-					saveCache(reqData);
+					saveToStorage(reqData.url, reqData);
 				}
 			}
 			else{
