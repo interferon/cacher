@@ -1,4 +1,4 @@
-var hp = require('./helperFuncs.js');
+var hp = require('./helperFuncs.js').helperFuncs;
 
 var xhr = window.XMLHttpRequest;
 

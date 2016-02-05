@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hp = __webpack_require__(1);
+	var hp = __webpack_require__(1).helperFuncs;
 	
 	var xhr = window.XMLHttpRequest;
 	
@@ -115,11 +115,11 @@
 		},
 		getCached : function(data){
 			console.log("cache extracted");
-			return getFromStorage(data.url).loadedRes;
+			return this.getFromStorage(data.url).loadedRes;
 		},
 		isCached : function(data){
 			console.log("checking if cached");
-			var cached = getFromStorage(data.url);
+			var cached = this.getFromStorage(data.url);
 			return cached !== null;
 		},
 		toBeCopied : function(attr){
