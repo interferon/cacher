@@ -65,12 +65,15 @@
 		this.send = function(post_data){
 			var reqData = {
 				url : this.__url,
-				post : post_data
+				post : post_data,
+				response : ""
 			};
 			myXHR.addEventListener('readystatechange', () => {
 				if (myXHR.readyState == 4) {
 					if(myXHR.status == 200) {
-						reqData.loadedRes = this.responseText;
+						if (this.responseText){
+							reqData.response = this.responseText;
+						}
 						hp.saveToStorage(reqData);
 					}
 				}
@@ -115,7 +118,7 @@
 		},
 		getCached (data){
 			console.log("cache extracted");
-			return this.getFromStorage(data.url).loadedRes;
+			return this.getFromStorage(data.url).response;
 		},
 		isCached (data){
 			console.log("checking if cached");

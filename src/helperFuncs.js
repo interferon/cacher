@@ -17,7 +17,7 @@ module.exports.helperFuncs = {
 	},
 	getCached (data){
 		console.log("cache extracted");
-		return this.getFromStorage(data.url).loadedRes;
+		return this.getFromStorage(data.url).response;
 	},
 	isCached (data){
 		console.log("checking if cached");
