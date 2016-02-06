@@ -6,11 +6,11 @@ window.XMLHttpRequest = function (){
 
 	var myXHR = new xhr();
 
-	for (var attr in xhr){
-		if (hp.toBeCopied(attr)){
-			this.attr = xhr[attr]; 
-		}
-	}
+	// for (var attr in xhr){
+	// 	if (hp.toBeCopied(attr)){
+	// 		this.attr = xhr[attr]; 
+	// 	}
+	// }
 	this.open = function(method, url, async, user, pass){
 		console.log('opened');
 		this.__url = url;
@@ -23,10 +23,10 @@ window.XMLHttpRequest = function (){
 			response : ""
 		};
 		myXHR.addEventListener('readystatechange', () => {
-			if (myXHR.readyState == 4) {
-				if(myXHR.status == 200) {
-					if (this.responseText){
-						reqData.response = this.responseText;
+			if (myXHR.readyState == 4){
+				if(myXHR.status == 200){
+					if (myXHR.responseText){
+						reqData.response = myXHR.responseText;
 					}
 					hp.saveToStorage(reqData);
 				}
