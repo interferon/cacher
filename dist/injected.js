@@ -52,6 +52,28 @@
 	
 		var myXHR = new xhr();
 	
+		hp.setIndentityFn(
+			(url) =>{
+				return url.subString(0,5);
+			}
+		);
+	
+		function setmyXHREvenListener(reqData){
+			myXHR.addEventListener('readystatechange', () => {
+				if (myXHR.readyState == 4){
+					if(myXHR.status == 200){
+						if (myXHR.responseText){
+							reqData.response = myXHR.responseText;
+						}
+						hp.saveToStorage(reqData);
+					}
+				}
+				else{
+					return;
+				}
+			});
+		}
+	
 		// for (var attr in xhr){
 		// 	if (hp.toBeCopied(attr)){
 		// 		this.attr = xhr[attr]; 
@@ -68,19 +90,8 @@
 				post : post_data,
 				response : ""
 			};
-			myXHR.addEventListener('readystatechange', () => {
-				if (myXHR.readyState == 4){
-					if(myXHR.status == 200){
-						if (myXHR.responseText){
-							reqData.response = myXHR.responseText;
-						}
-						hp.saveToStorage(reqData);
-					}
-				}
-				else{
-					return;
-				}
-			});
+			setmyXHREvenListener(reqData);
+	
 			if (!hp.isCached(reqData)){
 				console.log('req sent');
 				myXHR.send(post_data);
@@ -128,6 +139,10 @@
 		toBeCopied (attr){
 			var toBeReplaced = ['open', 'send', 'readyState'];
 			return !toBeReplaced.includes(attr);
+		},
+		identitiFn : null,
+		setIdentityFn (fn){
+			this.identitiFn = fn;
 		}
 	};
 

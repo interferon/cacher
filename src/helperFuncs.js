@@ -27,5 +27,9 @@ module.exports.helperFuncs = {
 	toBeCopied (attr){
 		var toBeReplaced = ['open', 'send', 'readyState'];
 		return !toBeReplaced.includes(attr);
+	},
+	identitiFn : null,
+	setIdentityFn (fn){
+		this.identitiFn = fn;
 	}
 };
