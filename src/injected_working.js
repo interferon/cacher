@@ -21,7 +21,7 @@ window.XMLHttpRequest = function (){
 			url : this.__url,
 			post : post_data
 		};
-		myXHR.addEventListener('readystatechange', function(){
+		myXHR.addEventListener('readystatechange', () => {
 			if (myXHR.readyState == 4) {
 				if(myXHR.status == 200) {
 					reqData.loadedRes = this.responseText;

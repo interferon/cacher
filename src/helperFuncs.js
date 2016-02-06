@@ -1,12 +1,12 @@
 module.exports.helperFuncs = {	
-	saveToStorage : function (data) {
+	saveToStorage (data) {
 		localStorage.setItem(data.url, JSON.stringify(data));
 	},
-	getFromStorage : function (key) {
+	getFromStorage (key) {
 		var stored = localStorage.getItem(key);
 		return JSON.parse(stored);
 	},
-	entriesAreEqual : function(entry1, entry2){
+	entriesAreEqual (entry1, entry2){
 		var result = false;
 		if (entry1.url === entry2.url){
 			if (entry1.post === entry2.post){
@@ -15,16 +15,16 @@ module.exports.helperFuncs = {
 		}
 		return result;
 	},
-	getCached : function(data){
+	getCached (data){
 		console.log("cache extracted");
 		return this.getFromStorage(data.url).loadedRes;
 	},
-	isCached : function(data){
+	isCached (data){
 		console.log("checking if cached");
 		var cached = this.getFromStorage(data.url);
 		return cached !== null;
 	},
-	toBeCopied : function(attr){
+	toBeCopied (attr){
 		var toBeReplaced = ['open', 'send', 'readyState'];
 		return !toBeReplaced.includes(attr);
 	}
