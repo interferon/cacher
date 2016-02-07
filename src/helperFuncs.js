@@ -1,35 +1,29 @@
 module.exports.helperFuncs = {	
-	saveToStorage (data) {
-		localStorage.setItem(data.url, JSON.stringify(data));
+	save (data) {
+		console.log("saved to storage");
+		localStorage.setItem(data.url, JSON.stringify(data));		
 	},
-	getFromStorage (key) {
+	get (key) {
 		var stored = localStorage.getItem(key);
+		console.log("got from storage");
 		return JSON.parse(stored);
 	},
-	entriesAreEqual (entry1, entry2){
-		var result = false;
-		if (entry1.url === entry2.url){
-			if (entry1.post === entry2.post){
-				result = true;
-			}
+	getCached (key){
+		console.log("getting cache");
+		return this.get(key);
+	},
+	isCached (key){
+		var cached = localStorage.getItem(key);
+		if (cached) {
+			console.log('is cached');
 		}
-		return result;
-	},
-	getCached (data){
-		console.log("cache extracted");
-		return this.getFromStorage(data.url).response;
-	},
-	isCached (data){
-		console.log("checking if cached");
-		var cached = this.getFromStorage(data.url);
 		return cached !== null;
 	},
-	toBeCopied (attr){
-		var toBeReplaced = ['open', 'send', 'readyState'];
-		return !toBeReplaced.includes(attr);
-	},
-	identitiFn : null,
-	setIdentityFn (fn){
-		this.identitiFn = fn;
+	triggerReadyStateChangeEvent(xhrWrapper, response){
+		xhrWrapper.responseText = response;
+		xhrWrapper.response = response;
+		xhrWrapper.readyState = 4;
+		xhrWrapper.status = 200;
+		xhrWrapper.onreadystatechange();
 	}
 };
