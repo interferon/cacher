@@ -45,27 +45,25 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	console.log('injected');
-	
 	var hp = __webpack_require__(1).helperFuncs;
-	
 	var xhr = window.XMLHttpRequest;
 	
 	window.XMLHttpRequest = function (){
 	
 		var xhrWrapper = this, myXHR = new xhr();
-	
+		
 		function responseListener(){
 			if (myXHR.readyState == 4 && myXHR.status == 200){	
-				console.log('response recieved');
 				hp.save({
 					url : xhrWrapper.__url,
 					post : xhrWrapper.__post_data,
 					response : myXHR.response
 				});
-				hp.triggerReadyStateChangeEvent(xhrWrapper, myXHR.response);
-				myXHR.removeEventListener('readystatechange', this);		
+				hp.triggerReadyStateChangeEvent(xhrWrapper, myXHR.response);		
 			}
-		}
+		};
+	
+		myXHR.addEventListener('readystatechange', responseListener);
 	
 		xhrWrapper.readyState = 0;
 	
@@ -73,13 +71,11 @@
 			xhrWrapper.__url = url;
 			myXHR.open(method, url, async, user, pass);
 		};
-	
+		
 		xhrWrapper.send = function(post_data){	
 			xhrWrapper.__post_data = post_data;
-			myXHR.addEventListener('readystatechange', responseListener);	
-			
+	
 			if (!hp.isCached(xhrWrapper.__url)){
-				console.log('not cached', xhrWrapper.__url);
 				myXHR.send(post_data);
 			}else{
 				var cached = hp.getCached(xhrWrapper.__url);
@@ -96,23 +92,17 @@
 
 	module.exports.helperFuncs = {	
 		save (data) {
-			console.log("saved to storage");
 			localStorage.setItem(data.url, JSON.stringify(data));		
 		},
 		get (key) {
 			var stored = localStorage.getItem(key);
-			console.log("got from storage");
 			return JSON.parse(stored);
 		},
 		getCached (key){
-			console.log("getting cache");
 			return this.get(key);
 		},
 		isCached (key){
 			var cached = localStorage.getItem(key);
-			if (cached) {
-				console.log('is cached');
-			}
 			return cached !== null;
 		},
 		triggerReadyStateChangeEvent(xhrWrapper, response){
