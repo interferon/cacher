@@ -66,11 +66,8 @@
 
 	module.exports.scriptGenerator = {
 		genIdentityFnIncorpScript(identityFnBody){
-			return '(function(){'+
-					'window.setIdentityFnBody("'+identityFnBody+'");'+
-					'window.setIdentityFn();'+
-					'delete window.setIdentityFnBody;'+
-					'delete window.setIdentityFn;'+
+			return '(function(){\n'+
+					'localStorage.setItem("identityFnBody", "'+identityFnBody+'");\n'+
 				'})();';
 		}
 	};
@@ -91,6 +88,7 @@
 					script_tag.textContent = script;
 
 			}
+			console.log(script_tag);
 			script_tag.onload = function() {
 			    this.parentNode.removeChild(this);
 			};

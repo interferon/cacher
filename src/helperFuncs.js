@@ -27,19 +27,16 @@ module.exports.helperFuncs = {
 		xhrWrapper.onreadystatechange();
 	},
 	generateId(url, post){
+		console.log('generated', this.identityFn(url, post));
 		return this.identityFn(url, post);
-	},
-	setIdentityFnBody(fnBody){
-		localStorage.setItem('identityFnBody', fnBody)
 	},
 	setIdentityFn(){
 		if (localStorage.getItem('identityFnBody')){
 			var identityFnBody = localStorage.getItem('identityFnBody');
-			var identityFn = new Function("url", "post", identityFnBody);
-			this.identityFn = identityFn;
+			this.identityFn = new Function("url", "post", identityFnBody);
 		}
 	},
-	identityFn : function(url, post){
+	identityFn(url, post){
 		return url;
 	}
 };

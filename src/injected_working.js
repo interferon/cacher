@@ -1,12 +1,9 @@
 console.log('injected');
 var hp = require('./helperFuncs.js').helperFuncs;
+
 var xhr = window.XMLHttpRequest;
+
 hp.setIdentityFn();
-//   !all global vars bellow, removed from global scope 
-//   immideately after invokation!
-window.setIdentityFn = hp.setIdentityFn;
-window.setIdentityFnBody = hp.setIdentityFnBody;
-window.hp = hp;
 
 window.XMLHttpRequest = function (){
 
@@ -43,6 +40,10 @@ window.XMLHttpRequest = function (){
 			hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 		}
 	};
+
+	xhrWrapper.updateIdFn = function(){
+		hp.setIdentityFn();
+	}
 
 	return xhrWrapper;
 };
