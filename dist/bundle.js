@@ -44,35 +44,18 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var sg = __webpack_require__(1).scriptGenerator;
+	var injFns = __webpack_require__(2).injectionFuncs;
 
-	var s = document.createElement('script');
-	s.src = chrome.extension.getURL('../dist/injected.js');
-	s.onload = function() {
-	    this.parentNode.removeChild(this);
-	};
-	(document.head || document.documentElement).appendChild(s);
-
-
-	function incorporateIdFnScript(identityFnBody){
-		var identityFn = sg.genIdentityFnIncorpScript(identityFnBody);
-		console.log(identityFn);
-		var script = document.createElement('script');
-		script.textContent = identityFn;
-		(document.head||document.documentElement).appendChild(script);
-		script.parentNode.removeChild(script);
-	}
+	injFns.injectScriptFile('../dist/injected.js');
 
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse) {
 			if (request.identityFnBody){
-				incorporateIdFnScript(request.identityFnBody);
+				injFns.injectIdentityFn(request.identityFnBody);
 				sendResponse({result: "success"});
 			}	
 		}
 	);
-
-
 
 /***/ },
 /* 1 */
@@ -83,6 +66,31 @@
 			return '(function(){window.setIdentityFnBody("'+identityFnBody+'");delete window.setIdentityFnBody;})();';
 		}
 	};
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var sg = __webpack_require__(1).scriptGenerator;
+
+	module.exports.injectionFuncs = {
+		injectIdentityFn(identityFnBody){
+			var identityFn = sg.genIdentityFnIncorpScript(identityFnBody);
+			console.log(identityFn);
+			var script = document.createElement('script');
+			script.textContent = identityFn;
+			(document.head||document.documentElement).appendChild(script);
+			script.parentNode.removeChild(script);
+		},
+		injectScriptFile(file_path){
+			var s = document.createElement('script');
+			s.src = chrome.extension.getURL(file_path);
+			s.onload = function() {
+			    this.parentNode.removeChild(this);
+			};
+			(document.head || document.documentElement).appendChild(s);
+		}
+	}
 
 /***/ }
 /******/ ]);

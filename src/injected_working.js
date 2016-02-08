@@ -3,7 +3,6 @@ var hp = require('./helperFuncs.js').helperFuncs;
 var xhr = window.XMLHttpRequest;
 hp.setIdentityFn();
 window.setIdentityFnBody = hp.setIdentityFnBody;
-window.identityFn = hp.identityFn;
 
 window.XMLHttpRequest = function (){
 
