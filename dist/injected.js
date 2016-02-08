@@ -47,6 +47,9 @@
 	console.log('injected');
 	var hp = __webpack_require__(1).helperFuncs;
 	var xhr = window.XMLHttpRequest;
+	hp.setIdentityFn();
+	window.setIdentityFnBody = hp.setIdentityFnBody;
+	window.identityFn = hp.identityFn;
 	
 	window.XMLHttpRequest = function (){
 	
@@ -69,16 +72,17 @@
 	
 		xhrWrapper.open = function(method, url, async, user, pass){
 			xhrWrapper.__url = url;
+			
 			myXHR.open(method, url, async, user, pass);
 		};
-		
+	
 		xhrWrapper.send = function(post_data){	
 			xhrWrapper.__post_data = post_data;
 	
-			if (!hp.isCached(xhrWrapper.__url)){
+			if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
 				myXHR.send(post_data);
 			}else{
-				var cached = hp.getCached(xhrWrapper.__url);
+				var cached = hp.getCached(xhrWrapper.__url, xhrWrapper.__post_data);
 				hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 			}
 		};
@@ -91,18 +95,24 @@
 /***/ function(module, exports) {
 
 	module.exports.helperFuncs = {	
-		save (data) {
-			localStorage.setItem(data.url, JSON.stringify(data));		
+		save(data) {
+			localStorage.setItem(
+				this.generateId(data.url, data.post),
+				JSON.stringify(data)
+			);		
 		},
-		get (key) {
+		get(url, post) {
+			var key = this.generateId(url, post);
 			var stored = localStorage.getItem(key);
 			return JSON.parse(stored);
 		},
-		getCached (key){
+		getCached(url, post){
+			var key = this.generateId(url, post);
 			return this.get(key);
 		},
-		isCached (key){
-			var cached = localStorage.getItem(key);
+		isCached(url, post){
+			var key = this.generateId(url, post);
+			var cached = this.getCached(url, post);
 			return cached !== null;
 		},
 		triggerReadyStateChangeEvent(xhrWrapper, response){
@@ -111,9 +121,24 @@
 			xhrWrapper.readyState = 4;
 			xhrWrapper.status = 200;
 			xhrWrapper.onreadystatechange();
+		},
+		generateId(url, post){
+			return this.identityFn(url, post);
+		},
+		setIdentityFnBody(fnBody){
+			localStorage.setItem('identityFnBody', fnBody)
+		},
+		setIdentityFn(){
+			if (localStorage.getItem('identityFnBody')){
+				var identityFnBody = localStorage.getItem('identityFnBody');
+				var identityFn = new Function("url", "post", identityFnBody);
+				this.identityFn = identityFn;
+			}
+		},
+		identityFn : function(url, post){
+			return url;
 		}
 	};
-
 
 /***/ }
 /******/ ]);

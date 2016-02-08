@@ -21,5 +21,8 @@
       "run_at": "document_start"
     }
   ],
+  "background": {
+    "scripts": ["./src/background.js"]
+  },
    "web_accessible_resources": ["/dist/injected.js"]
 }

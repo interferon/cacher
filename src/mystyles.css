@@ -1,0 +1,20 @@
+.container{
+	width : 300px;
+	height: 300px;
+}
+
+#submit_fn{
+	width: 100px;
+	height: 40px;
+}
+
+#custom_id_fn{
+	width: 300px;
+	height: 50px;
+}
+
+p{
+	font-size: 20px;
+	font-weight: bolder;
+	font-style: inherit;
+}
