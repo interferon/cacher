@@ -11,7 +11,8 @@ document.getElementById('submit_fn').addEventListener(
 		  		chrome.tabs.sendMessage(
 		  			tabs[0].id,
 		  			{
-		  				identityFnBody : fnbody
+		  				reciever : "identityFnBody",
+		  				data : fnbody
 		  			},
 		  			function(response) {
 		    			console.log(response.farewell);

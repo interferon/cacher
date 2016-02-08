@@ -45,15 +45,18 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var injFns = __webpack_require__(2).injectionFuncs;
+	var sg = __webpack_require__(1).scriptGenerator;
 
-	injFns.injectScriptFile('../dist/injected.js');
+	injFns.injectScript('../dist/injected.js', {type : 'file'});
 
 	chrome.runtime.onMessage.addListener(
-		function(request, sender, sendResponse) {
-			if (request.identityFnBody){
-				injFns.injectIdentityFn(request.identityFnBody);
-				sendResponse({result: "success"});
-			}	
+			function(request, sender, sendResponse) {
+			switch(request.reciever) {
+				case 'identityFnBody': 
+					var identityFnScript = sg.genIdentityFnIncorpScript(request.data);
+					injFns.injectScript(identityFnScript, {type : 'text'});
+					sendResponse({result: "success"});
+			}		
 		}
 	);
 
@@ -63,7 +66,12 @@
 
 	module.exports.scriptGenerator = {
 		genIdentityFnIncorpScript(identityFnBody){
-			return '(function(){window.setIdentityFnBody("'+identityFnBody+'");delete window.setIdentityFnBody;})();';
+			return '(function(){'+
+					'window.setIdentityFnBody("'+identityFnBody+'");'+
+					'window.setIdentityFn();'+
+					'delete window.setIdentityFnBody;'+
+					'delete window.setIdentityFn;'+
+				'})();';
 		}
 	};
 
@@ -74,23 +82,21 @@
 	var sg = __webpack_require__(1).scriptGenerator;
 
 	module.exports.injectionFuncs = {
-		injectIdentityFn(identityFnBody){
-			var identityFn = sg.genIdentityFnIncorpScript(identityFnBody);
-			console.log(identityFn);
-			var script = document.createElement('script');
-			script.textContent = identityFn;
-			(document.head||document.documentElement).appendChild(script);
-			script.parentNode.removeChild(script);
-		},
-		injectScriptFile(file_path){
-			var s = document.createElement('script');
-			s.src = chrome.extension.getURL(file_path);
-			s.onload = function() {
+		injectScript(script, options){
+			var script_tag = document.createElement('script');
+			switch(options.type) {
+				case 'file':
+					script_tag.src = chrome.extension.getURL(script);
+				case 'text':
+					script_tag.textContent = script;
+
+			}
+			script_tag.onload = function() {
 			    this.parentNode.removeChild(this);
 			};
-			(document.head || document.documentElement).appendChild(s);
+			(document.head || document.documentElement).appendChild(script_tag);
 		}
-	}
+	};
 
 /***/ }
 /******/ ]);

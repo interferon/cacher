@@ -1,5 +1,10 @@
 module.exports.scriptGenerator = {
 	genIdentityFnIncorpScript(identityFnBody){
-		return '(function(){window.setIdentityFnBody("'+identityFnBody+'");delete window.setIdentityFnBody;})();';
+		return '(function(){'+
+				'window.setIdentityFnBody("'+identityFnBody+'");'+
+				'window.setIdentityFn();'+
+				'delete window.setIdentityFnBody;'+
+				'delete window.setIdentityFn;'+
+			'})();';
 	}
 };

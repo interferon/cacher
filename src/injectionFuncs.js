@@ -1,20 +1,18 @@
 var sg = require('./scriptGenerator.js').scriptGenerator;
 
 module.exports.injectionFuncs = {
-	injectIdentityFn(identityFnBody){
-		var identityFn = sg.genIdentityFnIncorpScript(identityFnBody);
-		console.log(identityFn);
-		var script = document.createElement('script');
-		script.textContent = identityFn;
-		(document.head||document.documentElement).appendChild(script);
-		script.parentNode.removeChild(script);
-	},
-	injectScriptFile(file_path){
-		var s = document.createElement('script');
-		s.src = chrome.extension.getURL(file_path);
-		s.onload = function() {
+	injectScript(script, options){
+		var script_tag = document.createElement('script');
+		switch(options.type) {
+			case 'file':
+				script_tag.src = chrome.extension.getURL(script);
+			case 'text':
+				script_tag.textContent = script;
+
+		}
+		script_tag.onload = function() {
 		    this.parentNode.removeChild(this);
 		};
-		(document.head || document.documentElement).appendChild(s);
+		(document.head || document.documentElement).appendChild(script_tag);
 	}
-}
+};
