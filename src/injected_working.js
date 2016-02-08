@@ -40,7 +40,7 @@ window.XMLHttpRequest = function (){
 		if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
 			myXHR.send(post_data);
 		}else{
-			var cached = hp.getCached(xhrWrapper.__url, xhrWrapper.__post_data);
+			var cached = hp.get(xhrWrapper.__url, xhrWrapper.__post_data);
 			hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 		}
 	};

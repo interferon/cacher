@@ -10,12 +10,8 @@ var helperFuncs = {
 		var stored = localStorage.getItem(key);
 		return JSON.parse(stored);
 	},
-	getCached(url, post){
-		var key = this.generateId(url, post);
-		return this.get(key);
-	},
 	isCached(url, post){
-		var cached = this.getCached(url, post);
+		var cached = this.get(url, post);
 		return cached !== null;
 	},
 	triggerReadyStateChangeEvent(xhrWrapper, response){

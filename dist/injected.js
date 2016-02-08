@@ -86,7 +86,7 @@
 			if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
 				myXHR.send(post_data);
 			}else{
-				var cached = hp.getCached(xhrWrapper.__url, xhrWrapper.__post_data);
+				var cached = hp.get(xhrWrapper.__url, xhrWrapper.__post_data);
 				hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 			}
 		};
@@ -110,12 +110,8 @@
 			var stored = localStorage.getItem(key);
 			return JSON.parse(stored);
 		},
-		getCached(url, post){
-			var key = this.generateId(url, post);
-			return this.get(key);
-		},
 		isCached(url, post){
-			var cached = this.getCached(url, post);
+			var cached = this.get(url, post);
 			return cached !== null;
 		},
 		triggerReadyStateChangeEvent(xhrWrapper, response){
