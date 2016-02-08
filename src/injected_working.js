@@ -3,7 +3,11 @@ var hp = require('./helperFuncs.js').helperFuncs;
 
 var xhr = window.XMLHttpRequest;
 
+window.cacherNamespace = {};
+
 hp.setIdentityFn();
+
+hp.setIdentityFnUpdateHandler();
 
 window.XMLHttpRequest = function (){
 
@@ -40,10 +44,6 @@ window.XMLHttpRequest = function (){
 			hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 		}
 	};
-
-	xhrWrapper.updateIdFn = function(){
-		hp.setIdentityFn();
-	}
 
 	return xhrWrapper;
 };

@@ -49,7 +49,11 @@
 	
 	var xhr = window.XMLHttpRequest;
 	
+	window.cacherNamespace = {};
+	
 	hp.setIdentityFn();
+	
+	hp.setIdentityFnUpdateHandler();
 	
 	window.XMLHttpRequest = function (){
 	
@@ -87,10 +91,6 @@
 			}
 		};
 	
-		xhrWrapper.updateIdFn = function(){
-			hp.setIdentityFn();
-		}
-	
 		return xhrWrapper;
 	};
 
@@ -98,7 +98,7 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	module.exports.helperFuncs = {	
+	var helperFuncs = {	
 		save(data) {
 			localStorage.setItem(
 				this.generateId(data.url, data.post),
@@ -115,7 +115,6 @@
 			return this.get(key);
 		},
 		isCached(url, post){
-			var key = this.generateId(url, post);
 			var cached = this.getCached(url, post);
 			return cached !== null;
 		},
@@ -138,8 +137,18 @@
 		},
 		identityFn(url, post){
 			return url;
+		},
+		setIdentityFnUpdateHandler(){
+			cacherNamespace.trigger = function(event) {
+				switch(event){
+					case 'identityFnUpdate':
+						helperFuncs.setIdentityFn();
+				}
+			}
 		}
 	};
+	
+	module.exports.helperFuncs = helperFuncs;
 
 /***/ }
 /******/ ]);

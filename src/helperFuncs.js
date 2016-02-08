@@ -1,4 +1,4 @@
-module.exports.helperFuncs = {	
+var helperFuncs = {	
 	save(data) {
 		localStorage.setItem(
 			this.generateId(data.url, data.post),
@@ -15,7 +15,6 @@ module.exports.helperFuncs = {
 		return this.get(key);
 	},
 	isCached(url, post){
-		var key = this.generateId(url, post);
 		var cached = this.getCached(url, post);
 		return cached !== null;
 	},
@@ -38,5 +37,15 @@ module.exports.helperFuncs = {
 	},
 	identityFn(url, post){
 		return url;
+	},
+	setIdentityFnUpdateHandler(){
+		cacherNamespace.trigger = function(event) {
+			switch(event){
+				case 'identityFnUpdate':
+					helperFuncs.setIdentityFn();
+			}
+		}
 	}
 };
+
+module.exports.helperFuncs = helperFuncs;
