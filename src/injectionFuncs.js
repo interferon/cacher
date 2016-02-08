@@ -10,7 +10,6 @@ module.exports.injectionFuncs = {
 				script_tag.textContent = script;
 
 		}
-		console.log(script_tag);
 		script_tag.onload = function() {
 		    this.parentNode.removeChild(this);
 		};

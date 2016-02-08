@@ -1,4 +1,5 @@
 var injFns = require('./injectionFuncs.js').injectionFuncs;
+
 var sg = require('./scriptGenerator.js').scriptGenerator;
 
 injFns.injectScript('../dist/injected.js', {type : 'file'});

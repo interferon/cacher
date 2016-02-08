@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    entry: './src/injected_working.js',
+    entry: './src/xmlHttpWrapper.js',
     output: {
         path: __dirname,
         filename: './dist/injected.js'

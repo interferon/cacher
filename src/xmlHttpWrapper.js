@@ -1,4 +1,5 @@
 console.log('injected');
+
 var hp = require('./helperFuncs.js').helperFuncs;
 
 var xhr = window.XMLHttpRequest;
