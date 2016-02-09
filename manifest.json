@@ -24,5 +24,8 @@
   "background": {
     "scripts": ["./src/background.js"]
   },
+  "externally_connectable": {
+    "matches": ["http://127.0.0.1/*"]
+  },
    "web_accessible_resources": ["/dist/injected.js"]
 }

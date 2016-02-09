@@ -32,12 +32,19 @@ var helperFuncs = {
 		}
 	},
 	identityFn(url, post){
-		return url;
+		return url + JSON.stringify(post);
 	},
 	setIdentityFnUpdateHandler(){
 		cacherNamespace.AddEventListener('identityFnUpdate', function(){
 			helperFuncs.setIdentityFn();
 		})
+	},
+	cachingIsRequired(){
+		var isRequired = false;
+		if (localStorage.getItem('caching') === 'true'){
+			isRequired = true;
+		}
+		return isRequired;
 	}
 };
 

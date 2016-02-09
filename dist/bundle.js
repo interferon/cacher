@@ -48,16 +48,34 @@
 
 	var sg = __webpack_require__(2).scriptGenerator;
 
-	injFns.injectScript('../dist/injected.js', {type : 'file'});
+	injFns.injectScript(
+		'../dist/injected.js',
+		{type : 'file'}
+	);
+
+	var map = {
+		identityFnBody : function(fnbody, sendResponse){
+			var identityFnScript = sg.genIdentityFnIncorpScript(fnbody);
+			injFns.injectScript(identityFnScript, {type : 'text'});
+			sendResponse({result: "success"});
+		},
+		enableCachingForDomain : function(isRequired, sendResponse){
+			var cachingSettingScript = sg.genSetCachingScript(isRequired);
+			injFns.injectScript(cachingSettingScript, {type : 'text'});
+			sendResponse({result: "success"});
+		},
+		addMessagingFromDomain : function(id ,sendResponse){
+			var msgFromDomainScript  = sg.genCurrentDomainMessagingAbilityScript(id);
+			injFns.injectScript(msgFromDomainScript, {type : 'text'});
+			console.log(msgFromDomainScript);
+			sendResponse({result: "success"});
+		}
+
+	}
 
 	chrome.runtime.onMessage.addListener(
 			function(request, sender, sendResponse) {
-			switch(request.reciever) {
-				case 'identityFnBody': 
-					var identityFnScript = sg.genIdentityFnIncorpScript(request.data);
-					injFns.injectScript(identityFnScript, {type : 'text'});
-					sendResponse({result: "success"});
-			}		
+			map[request.reciever](request.data, sendResponse);		
 		}
 	);
 
@@ -91,8 +109,23 @@
 	module.exports.scriptGenerator = {
 		genIdentityFnIncorpScript(identityFnBody){
 			return '(function(){\n'+
-					'localStorage.setItem("identityFnBody", "'+identityFnBody+'");\n'+
-				'})();';
+						'localStorage.setItem("identityFnBody", "'+identityFnBody+'");\n'+
+					'})();';
+		},
+		genSetCachingScript(state){
+			return '(function(){\n'+
+						'localStorage.setItem("caching", "'+state+'");\n'+
+						'console.log("caching setted to '+state+'");\n'+
+					'})();';
+		},
+		genCurrentDomainMessagingAbilityScript(id){
+		return 	'var cachingRequired = localStorage.getItem("caching")\n'+
+				'chrome.runtime.sendMessage("'+id+'", {checkBoxState: cachingRequired},\n'+
+					'function(response) {\n'+
+					'if (!response.success){\n'+
+					'	console.log("failed to set checkBoxState");\n'+
+					'}\n'+
+				'});'
 		}
 	};
 
