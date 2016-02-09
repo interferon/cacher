@@ -45,15 +45,12 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	console.log('injected');
+	
 	var hp = __webpack_require__(1).helperFuncs;
 	
 	var xhr = window.XMLHttpRequest;
 	
-	window.cacherNamespace = {};
-	
 	hp.setIdentityFn();
-	
-	hp.setIdentityFnUpdateHandler();
 	
 	window.XMLHttpRequest = function (){
 	
@@ -135,12 +132,9 @@
 			return url;
 		},
 		setIdentityFnUpdateHandler(){
-			cacherNamespace.trigger = function(event) {
-				switch(event){
-					case 'identityFnUpdate':
-						helperFuncs.setIdentityFn();
-				}
-			}
+			cacherNamespace.AddEventListener('identityFnUpdate', function(){
+				helperFuncs.setIdentityFn();
+			})
 		}
 	};
 	

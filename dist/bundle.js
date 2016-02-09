@@ -44,8 +44,9 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var injFns = __webpack_require__(2).injectionFuncs;
-	var sg = __webpack_require__(1).scriptGenerator;
+	var injFns = __webpack_require__(1).injectionFuncs;
+
+	var sg = __webpack_require__(2).scriptGenerator;
 
 	injFns.injectScript('../dist/injected.js', {type : 'file'});
 
@@ -62,22 +63,9 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	module.exports.scriptGenerator = {
-		genIdentityFnIncorpScript(identityFnBody){
-			return '(function(){\n'+
-					'localStorage.setItem("identityFnBody", "'+identityFnBody+'");\n'+
-					'cacherNamespace.trigger("identityFnUpdate");\n'+
-				'})();';
-		}
-	};
-
-/***/ },
-/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var sg = __webpack_require__(1).scriptGenerator;
+	var sg = __webpack_require__(2).scriptGenerator;
 
 	module.exports.injectionFuncs = {
 		injectScript(script, options){
@@ -89,11 +77,22 @@
 					script_tag.textContent = script;
 
 			}
-			console.log(script_tag);
 			script_tag.onload = function() {
 			    this.parentNode.removeChild(this);
 			};
 			(document.head || document.documentElement).appendChild(script_tag);
+		}
+	};
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	module.exports.scriptGenerator = {
+		genIdentityFnIncorpScript(identityFnBody){
+			return '(function(){\n'+
+					'localStorage.setItem("identityFnBody", "'+identityFnBody+'");\n'+
+				'})();';
 		}
 	};
 

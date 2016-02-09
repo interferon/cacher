@@ -35,12 +35,9 @@ var helperFuncs = {
 		return url;
 	},
 	setIdentityFnUpdateHandler(){
-		cacherNamespace.trigger = function(event) {
-			switch(event){
-				case 'identityFnUpdate':
-					helperFuncs.setIdentityFn();
-			}
-		}
+		cacherNamespace.AddEventListener('identityFnUpdate', function(){
+			helperFuncs.setIdentityFn();
+		})
 	}
 };
 

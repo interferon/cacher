@@ -4,11 +4,7 @@ var hp = require('./helperFuncs.js').helperFuncs;
 
 var xhr = window.XMLHttpRequest;
 
-window.cacherNamespace = {};
-
 hp.setIdentityFn();
-
-hp.setIdentityFnUpdateHandler();
 
 window.XMLHttpRequest = function (){
 
