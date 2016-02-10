@@ -8,14 +8,11 @@ if (hp.cachingIsRequired()){
 	hp.setIdentityFn();
 
 	window.XMLHttpRequest = function (){
-
-		var xhrWrapper = this, myXHR = new xhr();
-
-		for (prop in myXHR){
-			if (hp.toSkip(prop)){
-				xhrWrapper[prop] = myXHR[prop];
-			}
-		}
+		var xhrWrapper = this;
+		var myXHR = new xhr(); 
+		var xhrWrapper = hp.clone(myXHR);
+		
+		
 		
 		function responseListener(){
 			if (myXHR.readyState == 4 && myXHR.status == 200){	
@@ -34,8 +31,15 @@ if (hp.cachingIsRequired()){
 
 		xhrWrapper.open = function(method, url, async, user, pass){
 			xhrWrapper.__url = url;
-			
 			myXHR.open(method, url, async, user, pass);
+		};
+
+		xhrWrapper.setRequestHeader = function(DOMStringheader, DOMStringvalue){			
+			myXHR.setRequestHeader(DOMStringheader, DOMStringvalue);
+		};
+
+		xhrWrapper.getResponseHeader = function(DOMStringheader){			
+			myXHR.getResponseHeader(DOMStringheader);
 		};
 
 		xhrWrapper.send = function(post_data){	
@@ -44,6 +48,7 @@ if (hp.cachingIsRequired()){
 			if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
 				myXHR.send(post_data);
 			}else{
+				console.log('is cached');
 				var cached = hp.get(xhrWrapper.__url, xhrWrapper.__post_data);
 				hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 			}

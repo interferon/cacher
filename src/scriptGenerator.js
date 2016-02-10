@@ -7,6 +7,7 @@ module.exports.scriptGenerator = {
 	genSetCachingScript(state){
 		return '(function(){\n'+
 					'localStorage.setItem("caching", "'+state+'");\n'+
+					'localStorage.setItem("pgldgjkefhfiioeacodogfolgpmefblb", "{}");\n'+
 					'console.log("caching setted to '+state+'");\n'+
 				'})();';
 	},

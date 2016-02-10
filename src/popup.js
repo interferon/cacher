@@ -3,6 +3,7 @@ document.getElementById('submit_fn').addEventListener(
 	function(){
 		var fnbody = document.getElementById('custom_id_fn').value.trim();
 		notifyContentScript('identityFnBody', fnbody, null);
+		showUserWarn('Changes will take effect after page refresh');
 	}
 );
 
@@ -35,7 +36,6 @@ function notifyContentScript(reciever, data, cb){
 	  		);
 		}
 	);
-	showUserWarn('Changes will take effect after page refresh');
 }
 
 function showUserWarn (message) {

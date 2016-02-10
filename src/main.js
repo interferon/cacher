@@ -22,13 +22,6 @@ var map = {
 		var caching = window.localStorage.getItem("caching");
 		sendResponse({result : caching});
 	}
-	// addMessagingFromDomain : function(id ,sendResponse){
-	// 	var msgFromDomainScript  = sg.genCurrentDomainMessagingAbilityScript(id);
-	// 	injFns.injectScript(msgFromDomainScript, {type : 'text'});
-	// 	console.log(msgFromDomainScript);
-	// 	sendResponse({result: "success"});
-	// }
-
 }
 
 chrome.runtime.onMessage.addListener(

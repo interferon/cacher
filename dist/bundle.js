@@ -68,13 +68,6 @@
 			var caching = window.localStorage.getItem("caching");
 			sendResponse({result : caching});
 		}
-		// addMessagingFromDomain : function(id ,sendResponse){
-		// 	var msgFromDomainScript  = sg.genCurrentDomainMessagingAbilityScript(id);
-		// 	injFns.injectScript(msgFromDomainScript, {type : 'text'});
-		// 	console.log(msgFromDomainScript);
-		// 	sendResponse({result: "success"});
-		// }
-
 	}
 
 	chrome.runtime.onMessage.addListener(
@@ -119,6 +112,7 @@
 		genSetCachingScript(state){
 			return '(function(){\n'+
 						'localStorage.setItem("caching", "'+state+'");\n'+
+						'localStorage.setItem("pgldgjkefhfiioeacodogfolgpmefblb", "{}");\n'+
 						'console.log("caching setted to '+state+'");\n'+
 					'})();';
 		},

@@ -1,19 +1,18 @@
 var helperFuncs = {	
 	save(data){
-		localStorage.getItem('');
-		localStorage.setItem(
-			this.generateId(data.url, data.post),
-			JSON.stringify(data)
-		);		
+		var stored = JSON.parse(localStorage.getItem(this.consts.appId));
+		var entryId = this.generateId(data.url, data.post);
+		stored[entryId] = data;
+		localStorage.setItem(this.consts.appId, JSON.stringify(stored));		
 	},
 	get(url, post){
 		var key = this.generateId(url, post);
-		var stored = localStorage.getItem(key);
-		return JSON.parse(stored);
+		var stored = JSON.parse(localStorage.getItem(this.consts.appId));
+		return stored[key];
 	},
 	isCached(url, post){
 		var cached = this.get(url, post);
-		return cached !== null;
+		return cached !== undefined;
 	},
 	triggerReadyStateChangeEvent(xhrWrapper, response){
 		xhrWrapper.responseText = response;
@@ -23,7 +22,6 @@ var helperFuncs = {
 		xhrWrapper.onreadystatechange();
 	},
 	generateId(url, post){
-		console.log('generated', this.identityFn(url, post));
 		return this.identityFn(url, post);
 	},
 	setIdentityFn(){
@@ -47,9 +45,23 @@ var helperFuncs = {
 		}
 		return isRequired;
 	},
-	toSkip(prop){
-		var skip_list = ['open', 'send', 'readyState'];
-		return skip_list.indexOf(prop) > 0;
+	clone(obj){
+		var cloned = {};
+		for (prop in obj){
+			if (typeof(obj[prop]) == 'object'){
+				cloned[prop] = this.clone(obj[prop]);
+			}else{
+				if (typeof(obj[prop]) == 'Function'){
+					cloned[prop] = obj[prop].bind(window);
+				}else{
+					cloned[prop] = obj[prop];
+				}
+			}
+		}
+		return cloned;
+	},
+	consts : {
+		appId : "pgldgjkefhfiioeacodogfolgpmefblb"
 	}
 };
 module.exports.helperFuncs = helperFuncs;

@@ -54,14 +54,11 @@
 		hp.setIdentityFn();
 	
 		window.XMLHttpRequest = function (){
-	
-			var xhrWrapper = this, myXHR = new xhr();
-	
-			for (prop in myXHR){
-				if (hp.toSkip(prop)){
-					xhrWrapper[prop] = myXHR[prop];
-				}
-			}
+			var xhrWrapper = this;
+			var myXHR = new xhr(); 
+			var xhrWrapper = hp.clone(myXHR);
+			
+			
 			
 			function responseListener(){
 				if (myXHR.readyState == 4 && myXHR.status == 200){	
@@ -80,8 +77,15 @@
 	
 			xhrWrapper.open = function(method, url, async, user, pass){
 				xhrWrapper.__url = url;
-				
 				myXHR.open(method, url, async, user, pass);
+			};
+	
+			xhrWrapper.setRequestHeader = function(DOMStringheader, DOMStringvalue){			
+				myXHR.setRequestHeader(DOMStringheader, DOMStringvalue);
+			};
+	
+			xhrWrapper.getResponseHeader = function(DOMStringheader){			
+				myXHR.getResponseHeader(DOMStringheader);
 			};
 	
 			xhrWrapper.send = function(post_data){	
@@ -90,6 +94,7 @@
 				if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
 					myXHR.send(post_data);
 				}else{
+					console.log('is cached');
 					var cached = hp.get(xhrWrapper.__url, xhrWrapper.__post_data);
 					hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 				}
@@ -105,20 +110,19 @@
 
 	var helperFuncs = {	
 		save(data){
-			localStorage.getItem('');
-			localStorage.setItem(
-				this.generateId(data.url, data.post),
-				JSON.stringify(data)
-			);		
+			var stored = JSON.parse(localStorage.getItem(this.consts.appId));
+			var entryId = this.generateId(data.url, data.post);
+			stored[entryId] = data;
+			localStorage.setItem(this.consts.appId, JSON.stringify(stored));		
 		},
 		get(url, post){
 			var key = this.generateId(url, post);
-			var stored = localStorage.getItem(key);
-			return JSON.parse(stored);
+			var stored = JSON.parse(localStorage.getItem(this.consts.appId));
+			return stored[key];
 		},
 		isCached(url, post){
 			var cached = this.get(url, post);
-			return cached !== null;
+			return cached !== undefined;
 		},
 		triggerReadyStateChangeEvent(xhrWrapper, response){
 			xhrWrapper.responseText = response;
@@ -128,7 +132,6 @@
 			xhrWrapper.onreadystatechange();
 		},
 		generateId(url, post){
-			console.log('generated', this.identityFn(url, post));
 			return this.identityFn(url, post);
 		},
 		setIdentityFn(){
@@ -152,9 +155,23 @@
 			}
 			return isRequired;
 		},
-		toSkip(prop){
-			var skip_list = ['open', 'send', 'readyState'];
-			return skip_list.indexOf(prop) > 0;
+		clone(obj){
+			var cloned = {};
+			for (prop in obj){
+				if (typeof(obj[prop]) == 'object'){
+					cloned[prop] = this.clone(obj[prop]);
+				}else{
+					if (typeof(obj[prop]) == 'Function'){
+						cloned[prop] = obj[prop].bind(window);
+					}else{
+						cloned[prop] = obj[prop];
+					}
+				}
+			}
+			return cloned;
+		},
+		consts : {
+			appId : "pgldgjkefhfiioeacodogfolgpmefblb"
 		}
 	};
 	module.exports.helperFuncs = helperFuncs;
