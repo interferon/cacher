@@ -15,11 +15,15 @@ var helperFuncs = {
 		return cached !== undefined;
 	},
 	triggerReadyStateChangeEvent(xhrWrapper, response){
-		xhrWrapper.responseText = response;
-		xhrWrapper.response = response;
-		xhrWrapper.readyState = 4;
-		xhrWrapper.status = 200;
-		xhrWrapper.onreadystatechange();
+		try{
+			xhrWrapper.responseText = response;
+			xhrWrapper.response = response;
+			xhrWrapper.readyState = 4;
+			xhrWrapper.status = 200;
+			xhrWrapper.onreadystatechange();
+		}catch(e){
+			console.log(e);
+		}
 	},
 	generateId(url, post){
 		return this.identityFn(url, post);

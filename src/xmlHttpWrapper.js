@@ -42,6 +42,10 @@ if (hp.cachingIsRequired()){
 			myXHR.getResponseHeader(DOMStringheader);
 		};
 
+		xhrWrapper.abort = function(){
+			myXHR.abort();
+		};
+
 		xhrWrapper.send = function(post_data){	
 			xhrWrapper.__post_data = post_data;
 
