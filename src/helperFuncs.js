@@ -46,6 +46,10 @@ var helperFuncs = {
 			isRequired = true;
 		}
 		return isRequired;
+	},
+	toSkip(prop){
+		var skip_list = ['open', 'send', 'readyState'];
+		return skip_list.indexOf(prop) > 0;
 	}
 };
 module.exports.helperFuncs = helperFuncs;

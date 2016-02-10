@@ -56,6 +56,12 @@
 		window.XMLHttpRequest = function (){
 	
 			var xhrWrapper = this, myXHR = new xhr();
+	
+			for (prop in myXHR){
+				if (hp.toSkip(prop)){
+					xhrWrapper[prop] = myXHR[prop];
+				}
+			}
 			
 			function responseListener(){
 				if (myXHR.readyState == 4 && myXHR.status == 200){	
@@ -145,6 +151,10 @@
 				isRequired = true;
 			}
 			return isRequired;
+		},
+		toSkip(prop){
+			var skip_list = ['open', 'send', 'readyState'];
+			return skip_list.indexOf(prop) > 0;
 		}
 	};
 	module.exports.helperFuncs = helperFuncs;

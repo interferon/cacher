@@ -10,6 +10,12 @@ if (hp.cachingIsRequired()){
 	window.XMLHttpRequest = function (){
 
 		var xhrWrapper = this, myXHR = new xhr();
+
+		for (prop in myXHR){
+			if (hp.toSkip(prop)){
+				xhrWrapper[prop] = myXHR[prop];
+			}
+		}
 		
 		function responseListener(){
 			if (myXHR.readyState == 4 && myXHR.status == 200){	
