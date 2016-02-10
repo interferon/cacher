@@ -15,7 +15,7 @@
   ],
   "content_scripts": [
     {
-      "matches": ["http://*/*"],
+      "matches": ["http://*/*", "https://*/*"],
       "css": ["./src/mystyles.css"],
       "js": ["./dist/bundle.js"],
       "run_at": "document_start"
@@ -23,9 +23,6 @@
   ],
   "background": {
     "scripts": ["./src/background.js"]
-  },
-  "externally_connectable": {
-    "matches": ["http://127.0.0.1/*"]
   },
    "web_accessible_resources": ["/dist/injected.js"]
 }

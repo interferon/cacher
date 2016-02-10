@@ -64,12 +64,16 @@
 			injFns.injectScript(cachingSettingScript, {type : 'text'});
 			sendResponse({result: "success"});
 		},
-		addMessagingFromDomain : function(id ,sendResponse){
-			var msgFromDomainScript  = sg.genCurrentDomainMessagingAbilityScript(id);
-			injFns.injectScript(msgFromDomainScript, {type : 'text'});
-			console.log(msgFromDomainScript);
-			sendResponse({result: "success"});
+		checkCachingState : function(state, sendResponse){
+			var caching = window.localStorage.getItem("caching");
+			sendResponse({result : caching});
 		}
+		// addMessagingFromDomain : function(id ,sendResponse){
+		// 	var msgFromDomainScript  = sg.genCurrentDomainMessagingAbilityScript(id);
+		// 	injFns.injectScript(msgFromDomainScript, {type : 'text'});
+		// 	console.log(msgFromDomainScript);
+		// 	sendResponse({result: "success"});
+		// }
 
 	}
 

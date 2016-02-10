@@ -98,13 +98,14 @@
 /***/ function(module, exports) {
 
 	var helperFuncs = {	
-		save(data) {
+		save(data){
+			localStorage.getItem('');
 			localStorage.setItem(
 				this.generateId(data.url, data.post),
 				JSON.stringify(data)
 			);		
 		},
-		get(url, post) {
+		get(url, post){
 			var key = this.generateId(url, post);
 			var stored = localStorage.getItem(key);
 			return JSON.parse(stored);
@@ -146,7 +147,6 @@
 			return isRequired;
 		}
 	};
-	
 	module.exports.helperFuncs = helperFuncs;
 
 /***/ }
