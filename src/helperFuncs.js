@@ -15,16 +15,12 @@ var helperFuncs = {
 		return cached !== undefined;
 	},
 	triggerReadyStateChangeEvent(xhrWrapper, response){
-		try{
-			xhrWrapper.responseText = response;
-			xhrWrapper.response = response;
-			xhrWrapper.readyState = 4;
-			xhrWrapper.status = 200;
-			xhrWrapper.onreadystatechange();
-		}catch(e){
-			console.log(e);
-		}
-	},
+        xhrWrapper.responseText = response;
+        xhrWrapper.response = response;
+        xhrWrapper.readyState = 4;
+        xhrWrapper.status = 200;
+        xhrWrapper.onreadystatechange && xhrWrapper.onreadystatechange();
+    },
 	generateId(url, post){
 		return this.identityFn(url, post);
 	},
@@ -68,16 +64,25 @@ var helperFuncs = {
 		appId : "pgldgjkefhfiioeacodogfolgpmefblb"
 	},
 	event_engine : {
-		registerListener(event, handler){
+		addListener(event, handler){
+			console.log('listener to orst added', handler);
 			this.events_map[event].push(handler);
 		},
 		fireEvent (event){
-			for (handler in this.events_map[event]){
-				this.events_map[handler]();
-			}
+			var that = this;
+			this.events_map[event].map(
+				function(handler){
+					console.log('event fired', handler);
+					handler();
+				}
+			);
+			this.events_map[event] = [];
 		},
 		events_map:{
 			on_rd_st_ch_assigned : []
+		},
+		removeListener(event, handler){
+			delete this.events_map[event][indexOf(handler)];
 		}			
 	}
 };
