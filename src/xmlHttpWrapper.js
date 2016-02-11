@@ -12,14 +12,11 @@ if (hp.cachingIsRequired()){
         var myXHR = new xhr();
         var xhrWrapper = {
             set onreadystatechange(value){
-                myXHR.onreadystatechange = value;
-                var resultReceived = !!xhrWrapper.response;
-                if (resultReceived) {
-                    value.apply(xhrWrapper);
-                }
+                xhrWrapper._onreadystatechange = value;
+                xhrWrapper.response && hp.triggerReadyStateChangeEvent(xhrWrapper, xhrWrapper.response);
             },
             get onreadystatechange(){
-                return this._onreadystatechange;
+                return xhrWrapper._onreadystatechange;
             }           
         };
 
@@ -67,7 +64,6 @@ if (hp.cachingIsRequired()){
                 hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
             }
         };
-
         return xhrWrapper;
     };
 }

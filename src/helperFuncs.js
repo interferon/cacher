@@ -19,7 +19,7 @@ var helperFuncs = {
         xhrWrapper.response = response;
         xhrWrapper.readyState = 4;
         xhrWrapper.status = 200;
-        xhrWrapper.onreadystatechange && xhrWrapper.onreadystatechange();
+        xhrWrapper._onreadystatechange && xhrWrapper._onreadystatechange();
     },
 	generateId(url, post){
 		return this.identityFn(url, post);
@@ -62,28 +62,6 @@ var helperFuncs = {
 	},
 	consts : {
 		appId : "pgldgjkefhfiioeacodogfolgpmefblb"
-	},
-	event_engine : {
-		addListener(event, handler){
-			console.log('listener to orst added', handler);
-			this.events_map[event].push(handler);
-		},
-		fireEvent (event){
-			var that = this;
-			this.events_map[event].map(
-				function(handler){
-					console.log('event fired', handler);
-					handler();
-				}
-			);
-			this.events_map[event] = [];
-		},
-		events_map:{
-			on_rd_st_ch_assigned : []
-		},
-		removeListener(event, handler){
-			delete this.events_map[event][indexOf(handler)];
-		}			
 	}
 };
 module.exports.helperFuncs = helperFuncs;

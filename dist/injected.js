@@ -58,14 +58,11 @@
 	        var myXHR = new xhr();
 	        var xhrWrapper = {
 	            set onreadystatechange(value){
-	                myXHR.onreadystatechange = value;
-	                var resultReceived = !!xhrWrapper.response;
-	                if (resultReceived) {
-	                    value.apply(xhrWrapper);
-	                }
+	                xhrWrapper._onreadystatechange = value;
+	                xhrWrapper.response && hp.triggerReadyStateChangeEvent(xhrWrapper, xhrWrapper.response);
 	            },
 	            get onreadystatechange(){
-	                return this._onreadystatechange;
+	                return xhrWrapper._onreadystatechange;
 	            }           
 	        };
 	
@@ -113,7 +110,6 @@
 	                hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
 	            }
 	        };
-	
 	        return xhrWrapper;
 	    };
 	}
@@ -143,7 +139,7 @@
 	        xhrWrapper.response = response;
 	        xhrWrapper.readyState = 4;
 	        xhrWrapper.status = 200;
-	        xhrWrapper.onreadystatechange && xhrWrapper.onreadystatechange();
+	        xhrWrapper._onreadystatechange && xhrWrapper._onreadystatechange();
 	    },
 		generateId(url, post){
 			return this.identityFn(url, post);
@@ -186,28 +182,6 @@
 		},
 		consts : {
 			appId : "pgldgjkefhfiioeacodogfolgpmefblb"
-		},
-		event_engine : {
-			addListener(event, handler){
-				console.log('listener to orst added', handler);
-				this.events_map[event].push(handler);
-			},
-			fireEvent (event){
-				var that = this;
-				this.events_map[event].map(
-					function(handler){
-						console.log('event fired', handler);
-						handler();
-					}
-				);
-				this.events_map[event] = [];
-			},
-			events_map:{
-				on_rd_st_ch_assigned : []
-			},
-			removeListener(event, handler){
-				delete this.events_map[event][indexOf(handler)];
-			}			
 		}
 	};
 	module.exports.helperFuncs = helperFuncs;
