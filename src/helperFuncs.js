@@ -49,23 +49,36 @@ var helperFuncs = {
 		}
 		return isRequired;
 	},
-	clone(obj){
-		var cloned = {};
+	clone(obj, clonee){
 		for (prop in obj){
+			if (prop == "onreadystatechange"){continue;}
 			if (typeof(obj[prop]) == 'object'){
-				cloned[prop] = this.clone(obj[prop]);
+				clonee[prop] = this.clone(obj[prop], clonee);
 			}else{
 				if (typeof(obj[prop]) == 'Function'){
-					cloned[prop] = obj[prop].bind(window);
+					clonee[prop] = obj[prop].bind(window);
 				}else{
-					cloned[prop] = obj[prop];
+					clonee[prop] = obj[prop];
 				}
 			}
 		}
-		return cloned;
+		return clonee;
 	},
 	consts : {
 		appId : "pgldgjkefhfiioeacodogfolgpmefblb"
+	},
+	event_engine : {
+		registerListener(event, handler){
+			this.events_map[event].push(handler);
+		},
+		fireEvent (event){
+			for (handler in this.events_map[event]){
+				this.events_map[handler]();
+			}
+		},
+		events_map:{
+			on_rd_st_ch_assigned : []
+		}			
 	}
 };
 module.exports.helperFuncs = helperFuncs;

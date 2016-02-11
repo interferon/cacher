@@ -7,21 +7,35 @@ if (hp.cachingIsRequired()){
 
 	hp.setIdentityFn();
 
-	window.XMLHttpRequest = function (){
-		var xhrWrapper = this;
-		var myXHR = new xhr(); 
-		var xhrWrapper = hp.clone(myXHR);
+	window.XMLHttpRequest = function (){	
 		
+		var myXHR = new xhr();
 		
+		var xhrWrapper = {
+			set onreadystatechange(value){
+				this._onreadystatechange = value;
+				hp.event_engine.fireEvent('on_rd_st_ch_assigned');
+			},
+			get onreadystatechange(){
+				return this._onreadystatechange;
+			}			
+		};
+
+		hp.clone(myXHR, xhrWrapper);
 		
 		function responseListener(){
-			if (myXHR.readyState == 4 && myXHR.status == 200){	
+			if (myXHR.readyState == 4 && myXHR.status == 200){  
 				hp.save({
 					url : xhrWrapper.__url,
 					post : xhrWrapper.__post_data,
 					response : myXHR.response
 				});
-				hp.triggerReadyStateChangeEvent(xhrWrapper, myXHR.response);		
+				hp.event_engine.registerListener(
+					'on_rd_st_ch_assigned',
+					function(argument){
+						hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
+					}
+				);
 			}
 		};
 
@@ -34,11 +48,11 @@ if (hp.cachingIsRequired()){
 			myXHR.open(method, url, async, user, pass);
 		};
 
-		xhrWrapper.setRequestHeader = function(DOMStringheader, DOMStringvalue){			
+		xhrWrapper.setRequestHeader = function(DOMStringheader, DOMStringvalue){            
 			myXHR.setRequestHeader(DOMStringheader, DOMStringvalue);
 		};
 
-		xhrWrapper.getResponseHeader = function(DOMStringheader){			
+		xhrWrapper.getResponseHeader = function(DOMStringheader){           
 			myXHR.getResponseHeader(DOMStringheader);
 		};
 
@@ -46,18 +60,24 @@ if (hp.cachingIsRequired()){
 			myXHR.abort();
 		};
 
-		xhrWrapper.send = function(post_data){	
+		xhrWrapper.send = function(post_data){  
 			xhrWrapper.__post_data = post_data;
-
-			if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
-				myXHR.send(post_data);
-			}else{
-				console.log('is cached');
-				var cached = hp.get(xhrWrapper.__url, xhrWrapper.__post_data);
-				hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
-			}
+			hp.event_engine.registerListener(
+				'on_rd_st_ch_assigned',
+				function(argument){
+					if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
+						myXHR.send(post_data);
+					}else{
+						console.log('is cached');
+						var cached = hp.get(xhrWrapper.__url, xhrWrapper.__post_data);
+						hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
+					}
+				}
+			);
 		};
 
 		return xhrWrapper;
 	};
+
 }
+
