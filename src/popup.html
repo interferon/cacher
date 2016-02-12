@@ -6,22 +6,8 @@
 		<link rel="stylesheet" type="text/css" href="./mystyles.css">
 	</head>
 	<body>
-		<div id="cont" class="container">
-			<div>
-				<input type="checkbox" id="use_caching">
-				<label for='use_caching'>Use caching for current page</label>
-			</div>
-			<div>
-				<p>function (url, post) {</p>
-				<textarea id="custom_id_fn" placeholder="Fn's body goes here"></textarea>
-				<p>}</p>
-				<button id="submit_fn">Submit</button>
-				<p id="user_message"></p>
-			</div>
-		</div>
-		<script type="text/javascript" src="./react/react.min.js"></script>
-		<script type="text/javascript" src="./react/react.dom.min.js"></script>
-		<script type="text/javascript" src="./popup.js"></script>
-
+		<div id="app" class="container"></div>
+		<script src="client.min.js"></script>
+		<script type="text/javascript" src="popup.js"></script>
 	</body>
 </html>
