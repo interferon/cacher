@@ -48,70 +48,77 @@
 	var hp = __webpack_require__(1).helperFuncs;
 	
 	if (hp.cachingIsRequired()){
+		
+		hp.setIdentityFn();
+		var xhr = window.XMLHttpRequest;
+		
+		window.XMLHttpRequest = function (){    
+			
+			var myXHR = new xhr();
+			var xhrWrapper = {
+				readyState : 4,
+				status : 200,
+				set onreadystatechange(value){
+					xhrWrapper._onreadystatechange = value;
+					xhrWrapper.response &&
+						xhrWrapper._onreadystatechange();
+				},
+				get onreadystatechange(){
+					return xhrWrapper._onreadystatechange;
+				}			         
+			};
 	
-	    var xhr = window.XMLHttpRequest;
+			function responseListener(){
+				if (myXHR.readyState == 4 && myXHR.status == 200){  
+					hp.save({
+						url : xhrWrapper.__url,
+						post : xhrWrapper.__post_data,
+						response : myXHR.response
+					});
+					xhrWrapper.response,
+					xhrWrapper.responseText = myXHR.response;
+					xhrWrapper._onreadystatechange &&
+						xhrWrapper._onreadystatechange();
+				}
+			};
 	
-	    hp.setIdentityFn();
+			myXHR.addEventListener('readystatechange', responseListener);
 	
-	    window.XMLHttpRequest = function (){    
-	        
-	        var myXHR = new xhr();
-	        var xhrWrapper = {
-	            set onreadystatechange(value){
-	                xhrWrapper._onreadystatechange = value;
-	                xhrWrapper.response && hp.triggerReadyStateChangeEvent(xhrWrapper, xhrWrapper.response);
-	            },
-	            get onreadystatechange(){
-	                return xhrWrapper._onreadystatechange;
-	            }           
-	        };
 	
-	        hp.clone(myXHR, xhrWrapper);
-	        
-	        function responseListener(){
-	            if (myXHR.readyState == 4 && myXHR.status == 200){  
-	                hp.save({
-	                    url : xhrWrapper.__url,
-	                    post : xhrWrapper.__post_data,
-	                    response : myXHR.response
-	                });
-	                hp.triggerReadyStateChangeEvent(xhrWrapper, myXHR.response);
-	            }
-	        };
+			xhrWrapper.open = function(method, url, async, user, pass){
+				xhrWrapper.__url = url;
+				myXHR.open(method, url, async, user, pass);
+			};
 	
-	        myXHR.addEventListener('readystatechange', responseListener);
+			xhrWrapper.send = function(post_data){  
+				xhrWrapper.__post_data = post_data;
+				var url = xhrWrapper.__url;
+				if (hp.isCached(url, post_data)){
+					xhrWrapper.response,
+					xhrWrapper.responseText = hp.getCachedResponse(url, post_data);
+					xhrWrapper._onreadystatechange &&
+						xhrWrapper._onreadystatechange();
+				}else{
+					myXHR.send(post_data);
+				}
+			};
 	
-	        xhrWrapper.readyState = 0;
+			xhrWrapper.setRequestHeader = function(DOMStringheader, DOMStringvalue){            
+				myXHR.setRequestHeader(DOMStringheader, DOMStringvalue);
+			};
 	
-	        xhrWrapper.open = function(method, url, async, user, pass){
-	            xhrWrapper.__url = url;
-	            myXHR.open(method, url, async, user, pass);
-	        };
+			xhrWrapper.getResponseHeader = function(DOMStringheader){           
+				myXHR.getResponseHeader(DOMStringheader);
+			};
 	
-	        xhrWrapper.setRequestHeader = function(DOMStringheader, DOMStringvalue){            
-	            myXHR.setRequestHeader(DOMStringheader, DOMStringvalue);
-	        };
+			xhrWrapper.abort = function(){
+				myXHR.abort();
+			};
 	
-	        xhrWrapper.getResponseHeader = function(DOMStringheader){           
-	            myXHR.getResponseHeader(DOMStringheader);
-	        };
 	
-	        xhrWrapper.abort = function(){
-	            myXHR.abort();
-	        };
 	
-	        xhrWrapper.send = function(post_data){  
-	            xhrWrapper.__post_data = post_data;
-	            if (!hp.isCached(xhrWrapper.__url, xhrWrapper.__post_data)){
-	                myXHR.send(post_data);
-	            }else{
-	                console.log('is cached');
-	                var cached = hp.get(xhrWrapper.__url, xhrWrapper.__post_data);
-	                hp.triggerReadyStateChangeEvent(xhrWrapper, cached.response);
-	            }
-	        };
-	        return xhrWrapper;
-	    };
+			return xhrWrapper;
+		};
 	}
 
 /***/ },
@@ -134,13 +141,10 @@
 			var cached = this.get(url, post);
 			return cached !== undefined;
 		},
-		triggerReadyStateChangeEvent(xhrWrapper, response){
-	        xhrWrapper.responseText = response;
-	        xhrWrapper.response = response;
-	        xhrWrapper.readyState = 4;
-	        xhrWrapper.status = 200;
-	        xhrWrapper._onreadystatechange && xhrWrapper._onreadystatechange();
-	    },
+		getCachedResponse(url, post){
+			console.log('is cached');
+			return this.get(url, post).response;
+		},
 		generateId(url, post){
 			return this.identityFn(url, post);
 		},
@@ -158,27 +162,16 @@
 				helperFuncs.setIdentityFn();
 			})
 		},
+		buildXMLHttpProps(xhr){
+			xhr.readyState = 4;
+			xhr.status = 200;
+		},
 		cachingIsRequired(){
 			var isRequired = false;
 			if (localStorage.getItem('caching') === 'true'){
 				isRequired = true;
 			}
 			return isRequired;
-		},
-		clone(obj, clonee){
-			for (prop in obj){
-				if (prop == "onreadystatechange"){continue;}
-				if (typeof(obj[prop]) == 'object'){
-					clonee[prop] = this.clone(obj[prop], clonee);
-				}else{
-					if (typeof(obj[prop]) == 'Function'){
-						clonee[prop] = obj[prop].bind(window);
-					}else{
-						clonee[prop] = obj[prop];
-					}
-				}
-			}
-			return clonee;
 		},
 		consts : {
 			appId : "pgldgjkefhfiioeacodogfolgpmefblb"

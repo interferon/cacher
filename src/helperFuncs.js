@@ -14,13 +14,10 @@ var helperFuncs = {
 		var cached = this.get(url, post);
 		return cached !== undefined;
 	},
-	triggerReadyStateChangeEvent(xhrWrapper, response){
-        xhrWrapper.responseText = response;
-        xhrWrapper.response = response;
-        xhrWrapper.readyState = 4;
-        xhrWrapper.status = 200;
-        xhrWrapper._onreadystatechange && xhrWrapper._onreadystatechange();
-    },
+	getCachedResponse(url, post){
+		console.log('is cached');
+		return this.get(url, post).response;
+	},
 	generateId(url, post){
 		return this.identityFn(url, post);
 	},
@@ -38,27 +35,16 @@ var helperFuncs = {
 			helperFuncs.setIdentityFn();
 		})
 	},
+	buildXMLHttpProps(xhr){
+		xhr.readyState = 4;
+		xhr.status = 200;
+	},
 	cachingIsRequired(){
 		var isRequired = false;
 		if (localStorage.getItem('caching') === 'true'){
 			isRequired = true;
 		}
 		return isRequired;
-	},
-	clone(obj, clonee){
-		for (prop in obj){
-			if (prop == "onreadystatechange"){continue;}
-			if (typeof(obj[prop]) == 'object'){
-				clonee[prop] = this.clone(obj[prop], clonee);
-			}else{
-				if (typeof(obj[prop]) == 'Function'){
-					clonee[prop] = obj[prop].bind(window);
-				}else{
-					clonee[prop] = obj[prop];
-				}
-			}
-		}
-		return clonee;
 	},
 	consts : {
 		appId : "pgldgjkefhfiioeacodogfolgpmefblb"
