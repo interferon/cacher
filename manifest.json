@@ -6,8 +6,8 @@
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "./src/icon.png",
-    "default_popup": "./src/popup.html"
+    "default_icon": "./src/extension/img/icon.png",
+    "default_popup": "./src/extension/popup.html"
   },
   "permissions": [
     "activeTab",
@@ -16,13 +16,10 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "css": ["./src/mystyles.css"],
+      "css": ["./src/extension/css/mystyles.css"],
       "js": ["./dist/bundle.js"],
       "run_at": "document_start"
     }
   ],
-  "background": {
-    "scripts": ["./src/background.js"]
-  },
    "web_accessible_resources": ["/dist/injected.js"]
 }
