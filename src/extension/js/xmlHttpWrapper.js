@@ -10,8 +10,6 @@ if (hp.cachingIsRequired()){
 		
 		var myXHR = new xhr();
 		var xhrWrapper = {
-			readyState : 4,
-			status : 200,
 			set onreadystatechange(value){
 				xhrWrapper._onreadystatechange = value;
 				xhrWrapper.response &&
@@ -22,6 +20,13 @@ if (hp.cachingIsRequired()){
 			}			         
 		};
 
+		function onSuccessfullResponseRecieved() {
+			xhrWrapper.readyState = 4;
+			xhrWrapper.status = 200;
+			xhrWrapper.response = xhrWrapper.responseText = myXHR.response;
+			xhrWrapper._onreadystatechange && xhrWrapper._onreadystatechange();
+		}
+
 		function responseListener(){
 			if (myXHR.readyState == 4 && myXHR.status == 200){  
 				hp.save({
@@ -29,10 +34,7 @@ if (hp.cachingIsRequired()){
 					post : xhrWrapper.__post_data,
 					response : myXHR.response
 				});
-				xhrWrapper.response,
-				xhrWrapper.responseText = myXHR.response;
-				xhrWrapper._onreadystatechange &&
-					xhrWrapper._onreadystatechange();
+				onSuccessfullResponseRecieved();
 			}
 		};
 
@@ -45,13 +47,11 @@ if (hp.cachingIsRequired()){
 		};
 
 		xhrWrapper.send = function(post_data){  
+			xhrWrapper.response = xhrWrapper.responseText = null;
 			xhrWrapper.__post_data = post_data;
 			var url = xhrWrapper.__url;
 			if (hp.isCached(url, post_data)){
-				xhrWrapper.response,
-				xhrWrapper.responseText = hp.getCachedResponse(url, post_data);
-				xhrWrapper._onreadystatechange &&
-					xhrWrapper._onreadystatechange();
+				onSuccessfullResponseRecieved();
 			}else{
 				myXHR.send(post_data);
 			}
@@ -74,3 +74,4 @@ if (hp.cachingIsRequired()){
 		return xhrWrapper;
 	};
 }
+
