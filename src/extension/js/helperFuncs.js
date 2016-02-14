@@ -2,12 +2,12 @@ var helperFuncs = {
 	save(data){
 		console.log('response saved');
 		var stored = JSON.parse(localStorage.getItem(this.consts.appId));
-		var entryId = this.generateId(data.url, data.post);
+		var entryId = this.identityFn(data.url, data.post);
 		stored[entryId] = data;
 		localStorage.setItem(this.consts.appId, JSON.stringify(stored));		
 	},
 	get(url, post){
-		var key = this.generateId(url, post);
+		var key = this.identityFn(url, post);
 		var stored = JSON.parse(localStorage.getItem(this.consts.appId));
 		return stored[key];
 	},
@@ -18,9 +18,6 @@ var helperFuncs = {
 	getCachedResponse(url, post){
 		console.log('is cached');
 		return this.get(url, post).response;
-	},
-	generateId(url, post){
-		return this.identityFn(url, post);
 	},
 	setIdentityFn(){
 		if (localStorage.getItem('identityFnBody')){
@@ -36,16 +33,8 @@ var helperFuncs = {
 			helperFuncs.setIdentityFn();
 		})
 	},
-	buildXMLHttpProps(xhr){
-		xhr.readyState = 4;
-		xhr.status = 200;
-	},
 	cachingIsRequired(){
-		var isRequired = false;
-		if (localStorage.getItem('caching_state') == 'true'){
-			isRequired = true;
-		}
-		return isRequired;
+		return (localStorage.getItem('caching_state') == 'true');
 	},
 	consts : {
 		appId : "pgldgjkefhfiioeacodogfolgpmefblb"
