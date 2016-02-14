@@ -1,5 +1,3 @@
-var sg = require('./scriptGenerator.js').scriptGenerator;
-
 module.exports.injectionFuncs = {
 	injectScript(script, options){
 		var script_tag = document.createElement('script');

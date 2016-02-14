@@ -8,10 +8,8 @@ export default class Checkbox extends React.Component {
 			let label = 'Use caching for current page'
 			return (
 				<div>
-					<label>
-						<input type="checkbox" id="use_caching" onClick={this.handleClick.bind(this)}></input>
-						{label}
-					</label>	
+					<input type="checkbox" id="use_caching" onClick={this.handleClick.bind(this)}></input>
+					{label}
 				</div>
 			);
 		}

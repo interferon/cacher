@@ -4,20 +4,12 @@ module.exports.scriptGenerator = {
 					'localStorage.setItem("identityFnBody", "'+identityFnBody+'");\n'+
 				'})();';
 	},
-	genSetCachingScript(state){
+	genCachingStateScript(state){
 		return '(function(){\n'+
 					'localStorage.setItem("caching", "'+state+'");\n'+
 					'localStorage.setItem("pgldgjkefhfiioeacodogfolgpmefblb", "{}");\n'+
 					'console.log("caching setted to '+state+'");\n'+
+					'console.log("storage is", localStorage.getItem("pgldgjkefhfiioeacodogfolgpmefblb"));\n'+
 				'})();';
-	},
-	genCurrentDomainMessagingAbilityScript(id){
-	return 	'var cachingRequired = localStorage.getItem("caching")\n'+
-			'chrome.runtime.sendMessage("'+id+'", {checkBoxState: cachingRequired},\n'+
-				'function(response) {\n'+
-				'if (!response.success){\n'+
-				'	console.log("failed to set checkBoxState");\n'+
-				'}\n'+
-			'});'
 	}
 };

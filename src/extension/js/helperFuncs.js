@@ -1,5 +1,6 @@
 var helperFuncs = {	
 	save(data){
+		console.log('response saved');
 		var stored = JSON.parse(localStorage.getItem(this.consts.appId));
 		var entryId = this.generateId(data.url, data.post);
 		stored[entryId] = data;
@@ -41,7 +42,7 @@ var helperFuncs = {
 	},
 	cachingIsRequired(){
 		var isRequired = false;
-		if (localStorage.getItem('caching') === 'true'){
+		if (localStorage.getItem('caching_state') == 'true'){
 			isRequired = true;
 		}
 		return isRequired;

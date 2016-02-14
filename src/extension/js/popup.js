@@ -2,21 +2,19 @@ document.getElementById('submit_fn').addEventListener(
 	"click",
 	function(){
 		var fnbody = document.getElementById('custom_id_fn').value.trim();
-		notifyContentScript('identityFnBody', fnbody, null);
+		sendMessage('identityFnBody', fnbody, null);
 	}
 );
 
 document.getElementById('use_caching').addEventListener(
 	"click",
 	function(event){
-		notifyContentScript(
-			"enableCachingForDomain",
-			document.getElementById("use_caching").checked,
-			null);
+		var isChecked = document.getElementById("use_caching").checked;
+		sendMessage("changeCachingState", isChecked, null);
 	}
 )
 
-function notifyContentScript(reciever, data, cb){
+function sendMessage(reciever, data, cb){
 	chrome.tabs.query(
 		{
 			active: true,
@@ -43,9 +41,9 @@ function showUserWarn (message) {
 }
 
 function setCheckBox(result){
-	if (result === "true"){
+	if (result == "true"){
 		document.getElementById('use_caching').checked = true;
 	}
 }
 
-notifyContentScript('checkCachingState', null, setCheckBox);
+sendMessage('getCachingState', null, setCheckBox);
