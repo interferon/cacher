@@ -3,7 +3,7 @@ var webpack = require('webpack');
 process.env.NODE_ENV == "production";
 
 module.exports = {
-    entry: './src/xmlHttpWrapper.js',
+    entry: './src/extension/js/xmlHttpWrapper.js',
     output: {
         path: __dirname,
         filename: './dist/injected.js'
