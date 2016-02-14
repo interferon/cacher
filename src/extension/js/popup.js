@@ -9,8 +9,10 @@ document.getElementById('submit_fn').addEventListener(
 document.getElementById('use_caching').addEventListener(
 	"click",
 	function(event){
-		var state = document.getElementById("use_caching").checked;
-		notifyContentScript("enableCachingForDomain", state, null);
+		notifyContentScript(
+			"enableCachingForDomain",
+			document.getElementById("use_caching").checked,
+			null);
 	}
 )
 

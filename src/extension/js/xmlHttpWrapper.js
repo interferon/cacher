@@ -20,10 +20,10 @@ if (hp.cachingIsRequired()){
 			}			         
 		};
 
-		function onSuccessfullResponseRecieved() {
+		function onSuccessfullResponseRecieved(response) {
 			xhrWrapper.readyState = 4;
 			xhrWrapper.status = 200;
-			xhrWrapper.response = xhrWrapper.responseText = myXHR.response;
+			xhrWrapper.response = xhrWrapper.responseText = response;
 			xhrWrapper._onreadystatechange && xhrWrapper._onreadystatechange();
 		}
 
@@ -34,7 +34,7 @@ if (hp.cachingIsRequired()){
 					post : xhrWrapper.__post_data,
 					response : myXHR.response
 				});
-				onSuccessfullResponseRecieved();
+				onSuccessfullResponseRecieved(myXHR.response);
 			}
 		};
 
@@ -51,7 +51,7 @@ if (hp.cachingIsRequired()){
 			xhrWrapper.__post_data = post_data;
 			var url = xhrWrapper.__url;
 			if (hp.isCached(url, post_data)){
-				onSuccessfullResponseRecieved();
+				onSuccessfullResponseRecieved(hp.getCachedResponse(url, post_data));
 			}else{
 				myXHR.send(post_data);
 			}
