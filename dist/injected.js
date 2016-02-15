@@ -76,11 +76,15 @@
 			function responseListener (){
 				if (myXHR.readyState == 4 && myXHR.status == 200){  
 					if (hp.cachingIsRequired()){
-						hp.save({
-							url : xhrWrapper.__url,
-							post : xhrWrapper.__post_data,
-							response : myXHR.response
-						});
+						var key = hp.identityFn(xhrWrapper.__url, xhrWrapper.__post_data);
+						hp.save(
+							key,
+							{
+								url : xhrWrapper.__url,
+								post : xhrWrapper.__post_data,
+								response : myXHR.response
+							}
+						);
 					}
 					onSuccessfullResponseRecieved(myXHR.response);
 				}
@@ -96,9 +100,9 @@
 			xhrWrapper.send = function (post_data){  
 				xhrWrapper.response = xhrWrapper.responseText = null;
 				xhrWrapper.__post_data = post_data;
-				var url = xhrWrapper.__url;
-				if (hp.isCached(url, post_data)){
-					onSuccessfullResponseRecieved(hp.getCachedResponse(url, post_data));
+				var key = hp.identityFn(xhrWrapper.__url, post_data);
+				if (hp.isCached(key)){
+					onSuccessfullResponseRecieved(hp.getCachedResponse(key));
 				}else{
 					myXHR.send(post_data);
 				}
@@ -127,25 +131,19 @@
 /***/ function(module, exports) {
 
 	var helperFuncs = {	
-		save(data){
+		save(key, data){
 			console.log('response saved');
-			var stored = JSON.parse(localStorage.getItem(this.consts.appId));
-			var entryId = this.identityFn(data.url, data.post);
-			stored[entryId] = data;
-			localStorage.setItem(this.consts.appId, JSON.stringify(stored));		
+			var cachedData = JSON.parse(localStorage.getItem(this.consts.appId));
+			cachedData[key] = data;
+			localStorage.setItem(this.consts.appId, JSON.stringify(cachedData));		
 		},
-		get(url, post){
-			var key = this.identityFn(url, post);
-			var stored = JSON.parse(localStorage.getItem(this.consts.appId));
-			return stored[key];
-		},
-		isCached(url, post){
-			var cached = this.get(url, post);
+		isCached(key){
+			var cached = JSON.parse(localStorage.getItem(this.consts.appId))[key]
 			return cached !== undefined;
 		},
-		getCachedResponse(url, post){
+		getCachedResponse(key){
 			console.log('is cached');
-			return this.get(url, post).response;
+			return JSON.parse(localStorage.getItem(this.consts.appId))[key].response;
 		},
 		setIdentityFn(){
 			if (localStorage.getItem('identityFnBody')){

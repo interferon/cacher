@@ -1,23 +1,18 @@
 var helperFuncs = {	
-	save(data){
+	save(key, data){
 		console.log('response saved');
-		var stored = JSON.parse(localStorage.getItem(this.consts.appId));
-		var entryId = this.identityFn(data.url, data.post);
-		stored[entryId] = data;
-		localStorage.setItem(this.consts.appId, JSON.stringify(stored));		
+		var cachedData = JSON.parse(localStorage.getItem(this.consts.appId));
+		cachedData[key] = data;
+		localStorage.setItem(this.consts.appId, JSON.stringify(cachedData));
+		return cachedData;		
 	},
-	get(url, post){
-		var key = this.identityFn(url, post);
-		var stored = JSON.parse(localStorage.getItem(this.consts.appId));
-		return stored[key];
-	},
-	isCached(url, post){
-		var cached = this.get(url, post);
+	isCached(key){
+		var cached = JSON.parse(localStorage.getItem(this.consts.appId))[key]
 		return cached !== undefined;
 	},
-	getCachedResponse(url, post){
+	getCachedResponse(key){
 		console.log('is cached');
-		return this.get(url, post).response;
+		return JSON.parse(localStorage.getItem(this.consts.appId))[key].response;
 	},
 	setIdentityFn(){
 		if (localStorage.getItem('identityFnBody')){

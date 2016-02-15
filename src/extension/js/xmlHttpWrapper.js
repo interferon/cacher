@@ -30,11 +30,15 @@ if (hp.cachingIsRequired()){
 		function responseListener (){
 			if (myXHR.readyState == 4 && myXHR.status == 200){  
 				if (hp.cachingIsRequired()){
-					hp.save({
-						url : xhrWrapper.__url,
-						post : xhrWrapper.__post_data,
-						response : myXHR.response
-					});
+					var key = hp.identityFn(xhrWrapper.__url, xhrWrapper.__post_data);
+					hp.save(
+						key,
+						{
+							url : xhrWrapper.__url,
+							post : xhrWrapper.__post_data,
+							response : myXHR.response
+						}
+					);
 				}
 				onSuccessfullResponseRecieved(myXHR.response);
 			}
@@ -50,9 +54,9 @@ if (hp.cachingIsRequired()){
 		xhrWrapper.send = function (post_data){  
 			xhrWrapper.response = xhrWrapper.responseText = null;
 			xhrWrapper.__post_data = post_data;
-			var url = xhrWrapper.__url;
-			if (hp.isCached(url, post_data)){
-				onSuccessfullResponseRecieved(hp.getCachedResponse(url, post_data));
+			var key = hp.identityFn(xhrWrapper.__url, post_data);
+			if (hp.isCached(key)){
+				onSuccessfullResponseRecieved(hp.getCachedResponse(key));
 			}else{
 				myXHR.send(post_data);
 			}
