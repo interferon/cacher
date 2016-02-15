@@ -135,7 +135,8 @@
 			console.log('response saved');
 			var cachedData = JSON.parse(localStorage.getItem(this.consts.appId));
 			cachedData[key] = data;
-			localStorage.setItem(this.consts.appId, JSON.stringify(cachedData));		
+			localStorage.setItem(this.consts.appId, JSON.stringify(cachedData));
+			return cachedData;		
 		},
 		isCached(key){
 			var cached = JSON.parse(localStorage.getItem(this.consts.appId))[key]

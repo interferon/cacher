@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener(
 );
 
 var map = {
-	identityFnBody : function(fnbody, sendResponse){
+	setIdentityFnBody : function(fnbody, sendResponse){
 		localStorage.setItem("identityFnBody", fnbody);
 		sendResponse({result: "success"});
 	},

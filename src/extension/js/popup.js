@@ -2,7 +2,7 @@ document.getElementById('submit_fn').addEventListener(
 	"click",
 	function(){
 		var fnbody = document.getElementById('custom_id_fn').value.trim();
-		sendMessage('identityFnBody', fnbody, null);
+		sendMessage('setIdentityFnBody', fnbody, null);
 	}
 );
 
